@@ -18,13 +18,14 @@ on:
         required: true
         type: choice
         options: [ubuntu-latest, windows-latest]
+        default: 'ubuntu-latest'
       PythonVersion:
         description: 'Using Python v. ...'
         required: true
         type: choice
         options: [3.8, 3.9]
+        default: '3.8'
 env:
-  # PythonVersion: 3.8
   DockerImageName: todoapp
 
 jobs:
@@ -93,8 +94,8 @@ jobs:
     name: Build and Push Image
     runs-on: 'ubuntu-latest'
     env:
-      OsType: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.OsType || 'ubuntu-latest' }}
-      PythonVersion: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.PythonVersion || '3.8' }}
+      OsType: ${{ github.event.inputs.OsType }}
+      PythonVersion: ${{ github.event.inputs.PythonVersion }}
     if: ${{ github.ref_name == 'main' }}
     needs: python-ci
 
@@ -120,10 +121,10 @@ jobs:
 
   helm-ci:
     name: Helm CI
-    runs-on: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.OsType || 'ubuntu-latest' }}
+    runs-on: ${{ github.event.inputs.OsType }}
     env:
-      OsType: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.OsType || 'ubuntu-latest' }}
-      PythonVersion: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.PythonVersion || '3.8' }}
+      OsType: ${{ github.event.inputs.OsType }}
+      PythonVersion: ${{ github.event.inputs.PythonVersion }}
     needs: python-ci
     if: github.ref_name == 'main'
     steps:
